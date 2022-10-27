@@ -1,0 +1,42 @@
+spring:
+  profiles.active: dev
+  jpa:
+    hibernate:
+      ddl-auto: "validate"
+      dialect: "PostgreSQLDialect"
+      default_schema: "auto_rent"
+    show-sql: true
+
+  datasource:
+    initialization-mode: always
+    url: "jdbc:postgresql://localhost:5432/auto_rent"
+    username: "admin"
+    password: "admin"
+
+  flyway:
+    url: "jdbc:postgresql://localhost:5432/auto_rent?ssl=false"
+    user: "admin"
+    password: "admin"
+    locations: "classpath:/db/migration"
+    baselineOnMigrate: true
+
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+  freemarker:
+    templateLoaderPath:
+      - "classpath:/template/ftl/"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+name: dev-spring
+environment: develop
+enabled: true
+
+server:
+  port: 8082
