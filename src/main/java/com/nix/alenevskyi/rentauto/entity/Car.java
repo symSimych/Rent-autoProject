@@ -1,11 +1,10 @@
 package com.nix.alenevskyi.rentauto.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -59,4 +58,17 @@ public class Car {
 
     @Column(name = "is_premium")
     Boolean isPremium;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "car")
+    private List<Order> orders = new ArrayList<>();
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setCar(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setCar(null);
+    }
 }

@@ -1,3 +1,5 @@
+create extension if not exists "uuid-ossp";
+
 create table if not exists Cars (
     id uuid default uuid_generate_v4 (),
     brand varchar not null,

@@ -1,5 +1,6 @@
 package com.nix.alenevskyi.rentauto.services;
 
+import com.nix.alenevskyi.rentauto.dto.UserDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.User;
 

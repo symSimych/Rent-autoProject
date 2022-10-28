@@ -1,12 +1,15 @@
 package com.nix.alenevskyi.rentauto.services;
 
+import com.nix.alenevskyi.rentauto.dto.UserDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
+import com.nix.alenevskyi.rentauto.entity.User;
 import com.nix.alenevskyi.rentauto.repositories.CarRepository;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,5 +45,19 @@ public class AutoRentServiceImpl implements AutoRentService{
             case "year" -> cars = carRepository.findByOrderByYear();
         }
         return cars;
+    }
+
+//    @Override
+//    public User findUserByEmail(String email) {
+//        return userRepository.findByEmail(email);
+//    }
+//
+//    @Override
+//    public void saveUser(User user){
+//        userRepository.save(user);
+//    }
+
+    private boolean emailExists(String email) {
+        return userRepository.findByEmail(email) != null;
     }
 }
