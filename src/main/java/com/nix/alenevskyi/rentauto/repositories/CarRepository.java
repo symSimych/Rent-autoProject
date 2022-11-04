@@ -12,10 +12,6 @@ import java.util.UUID;
 @Repository
 public interface CarRepository extends CrudRepository<Car, UUID> {
 
-    @Query(value = "select car from Car car " +
-            " where car.brand like %:brand%")
-    List<Car> getCarsByBrand(@Param("brand") String brand);
-
     List<Car> findByOrderByPrice();
 
     List<Car> findByOrderByFuelConsumption();

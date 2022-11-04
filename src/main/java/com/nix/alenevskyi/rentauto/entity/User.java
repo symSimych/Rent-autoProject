@@ -2,19 +2,19 @@ package com.nix.alenevskyi.rentauto.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
 @ToString
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "Users")
@@ -36,10 +36,14 @@ public class User implements UserDetails {
     @Column(name = "password")
     String password;
 
-    @Column(name = "user_role")
-    private String role;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "Roles",joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<Order> orders = new ArrayList<>();
 
     public void addOrder(Order order) {
@@ -54,9 +58,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
-        return authorities;
+        return roles;
     }
 
     @Override
@@ -88,4 +90,12 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isAdmin() {
+        return roles.contains(Role.ROLE_ADMIN);
+    }
+    public boolean isManager() {
+        return roles.contains(Role.ROLE_MANAGER);
+    }
+
 }

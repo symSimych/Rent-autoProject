@@ -10,6 +10,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "Cars")
@@ -59,6 +61,9 @@ public class Car {
     @Column(name = "is_premium")
     Boolean isPremium;
 
+    @Column(name = "available")
+    Boolean available;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "car")
     private List<Order> orders = new ArrayList<>();
 
@@ -70,5 +75,10 @@ public class Car {
     public void removeOrder(Order order) {
         orders.remove(order);
         order.setCar(null);
+    }
+
+    @PrePersist
+    public void setAvailable() {
+        available = true;
     }
 }

@@ -1,8 +1,11 @@
 package com.nix.alenevskyi.rentauto.entity;
 
-public enum Role {
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
+    ROLE_USER("ROLE_USER"),
+    ROLE_MANAGER("ROLE_MANAGER"),
+    ROLE_ADMIN("ROLE_ADMIN");
     public String getRoleName() {
         return roleName;
     }
@@ -14,5 +17,10 @@ public enum Role {
     private String roleName;
     Role(String roleName) {
         this.roleName = roleName;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name();
     }
 }

@@ -1,7 +1,7 @@
 <#import "../layouts/main.ftlh" as layout>
 <@layout.page>
     <fieldset>
-        <a href="/all_cars" class="btn btn-info">Back</a>
+        <a href="/admin" class="btn btn-info">Back</a>
         <legend>Add Car</legend>
         <form name="LogIn" action="/add_new_car" method="post">
             Brand : <input type="text" name="brand" />	<br/>

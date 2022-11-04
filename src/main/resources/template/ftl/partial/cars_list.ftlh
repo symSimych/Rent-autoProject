@@ -11,6 +11,7 @@
         <th></th>
     </tr>
     <#list model["carList"] as car>
+    <#if car.getAvailable()>
         <tr>
             <td>${car.brand}</td>
             <td>${car.model}</td>
@@ -21,6 +22,7 @@
             <td>${car.transmission}</td>
             <td><a href="/all_cars/${car.id}" class="btn btn-info">More details</a></td>
         </tr>
+    </#if>
     </#list>
     </table>
 </#macro>

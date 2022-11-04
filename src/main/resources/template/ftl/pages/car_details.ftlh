@@ -12,25 +12,35 @@
             <th>transmission</th>
             <th>horse power</th>
             <th>engine volume</th>
-            <th>fuelType</th>
+            <th>fuel type</th>
             <th>tank volume</th>
             <th>fuel consumption</th>
         </tr>
-        <#list model["car"] as c>
             <tr>
-                <td>${c.brand}</td>
-                <td>${c.model}</td>
-                <td>${c.bodyType}</td>
-                <td>${c.bail}</td>
-                <td>${c.price}</td>
-                <td>${c.year}</td>
-                <td>${c.transmission}</td>
-                <td>${c.horsePower}</td>
-                <td>${c.engineVolume}</td>
-                <td>${c.fuelType}</td>
-                <td>${c.tankVolume}</td>
-                <td>${c.fuelConsumption}</td>
+                <td>${car.brand}</td>
+                <td>${car.model}</td>
+                <td>${car.bodyType}</td>
+                <td>${car.bail}</td>
+                <td>${car.price}</td>
+                <td>${car.year}</td>
+                <td>${car.transmission}</td>
+                <td>${car.horsePower}</td>
+                <td>${car.engineVolume}</td>
+                <td>${car.fuelType}</td>
+                <td>${car.tankVolume}</td>
+                <td>${car.fuelConsumption}</td>
             </tr>
-        </#list>
-        </table>
+    </table>
+        <br/>
+    <fieldset>
+        <legend>Make Order</legend>
+                <form name="CreateOrder" action="/add_new_order" method="post">
+                    Place of filing : <input type="text" name="placeOfFiling" />
+                    Filing time : <input type="datetime-local" name="filingTime" />	<br/>
+                    Place of return: <input type="text" name="placeOfReturn" />
+                    Return time: <input type="datetime-local" name="returnTime" />
+                    <input type="hidden" name="carId" value=${car.id} /> <br/>
+                    <input type="submit" value="   Confirm   " />
+                </form>
+        </fieldset>
 </@layout.page>

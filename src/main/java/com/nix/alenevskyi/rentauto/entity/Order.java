@@ -1,17 +1,19 @@
 package com.nix.alenevskyi.rentauto.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @ToString
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "Orders")
@@ -29,10 +31,10 @@ public class Order {
     String placeOfReturn;
 
     @Column(name = "filing_time")
-    Instant filingTime;
+    LocalDateTime filingTime;
 
     @Column(name = "return_time")
-    Instant returnTime;
+    LocalDateTime returnTime;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
