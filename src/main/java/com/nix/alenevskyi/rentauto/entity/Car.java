@@ -3,9 +3,7 @@ package com.nix.alenevskyi.rentauto.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -65,7 +63,7 @@ public class Car {
     Boolean available;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "car")
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     public void addOrder(Order order) {
         orders.add(order);
@@ -80,5 +78,27 @@ public class Car {
     @PrePersist
     public void setAvailable() {
         available = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", bodyType='" + bodyType + '\'' +
+                ", year='" + year + '\'' +
+                ", transmission='" + transmission + '\'' +
+                ", fuelType='" + fuelType + '\'' +
+                ", engineVolume=" + engineVolume +
+                ", horsePower=" + horsePower +
+                ", tankVolume=" + tankVolume +
+                ", fuelConsumption=" + fuelConsumption +
+                ", bail=" + bail +
+                ", price=" + price +
+                ", isPremium=" + isPremium +
+                ", available=" + available +
+//                ", orders=" + orders +
+                '}';
     }
 }

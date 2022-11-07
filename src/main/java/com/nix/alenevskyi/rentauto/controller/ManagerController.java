@@ -4,8 +4,13 @@ import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.Order;
 import com.nix.alenevskyi.rentauto.services.AutoRentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -75,9 +80,12 @@ public class ManagerController {
     }
 
     @GetMapping("/manager/car_manage")
-    public String carManage(@ModelAttribute("model") ModelMap model){
-        List<Car> cars = autoRentService.carList();
-        model.addAttribute("carList", cars);
+    public String carManage(Model model,
+                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
+        Page<Car> cars = autoRentService.carList(pageable);
+        model.addAttribute("url", "/manager/car_manage");
+        model.addAttribute("page", cars);
         return "/pages/car_manage";
     }
 

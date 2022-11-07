@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -23,20 +24,38 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return (web -> web.ignoring()
-                .antMatchers( "/registration"));
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer(){
+//        return (web -> web.ignoring()
+//                .antMatchers( "/registration"));
+//    }
+//
+//    @Bean
+//    public SecurityFilterChain configure (HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity
+//                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+//                .formLogin()/*.loginPage("/login").permitAll()*/.and()
+//                .csrf().disable();
+//        return httpSecurity.build();
+//    }
 
     @Bean
-    public SecurityFilterChain configure (HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .formLogin().and()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((requests) -> requests
+                        .antMatchers( "/", "/registration").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout(LogoutConfigurer::permitAll)
                 .csrf().disable();
-        return httpSecurity.build();
+
+        return http.build();
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){

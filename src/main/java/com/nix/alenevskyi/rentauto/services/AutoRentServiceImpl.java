@@ -1,7 +1,5 @@
 package com.nix.alenevskyi.rentauto.services;
 
-import com.nix.alenevskyi.rentauto.dto.OrderDto;
-import com.nix.alenevskyi.rentauto.dto.UserDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.Order;
 import com.nix.alenevskyi.rentauto.entity.User;
@@ -9,17 +7,12 @@ import com.nix.alenevskyi.rentauto.repositories.CarRepository;
 import com.nix.alenevskyi.rentauto.repositories.OrderRepository;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.orderDtoToEntity;
-import static com.nix.alenevskyi.rentauto.utils.EntityToDto.orderToOrderDto;
 
 @RequiredArgsConstructor
 @Service
@@ -30,8 +23,8 @@ public class AutoRentServiceImpl implements AutoRentService{
     private final OrderRepository orderRepository;
 
     @Override
-    public List<Car> carList() {
-        return (List<Car>) carRepository.findAll();
+    public Page<Car> carList(Pageable pageable) {
+        return (Page<Car>) carRepository.findAll(pageable);
     }
 
     @Override
@@ -40,17 +33,17 @@ public class AutoRentServiceImpl implements AutoRentService{
     }
 
     @Override
-    public List<Car> getCarSortedBy(String sortBy) {
-        List<Car> cars;
-        if(sortBy == null)return (List<Car>) carRepository.findAll();
-        if(sortBy.equals("price"))cars = carRepository.findByOrderByPrice();
-        else if(sortBy.equals("fuel consumption"))cars = carRepository.findByOrderByFuelConsumption();
-        else if(sortBy.equals("fuel type"))cars = carRepository.findByOrderByFuelType();
-        else if(sortBy.equals("transmission"))cars = carRepository.findByOrderByTransmission();
-        else if(sortBy.equals("brand"))cars = carRepository.findByOrderByBrand();
-        else if(sortBy.equals("model"))cars = carRepository.findByOrderByModel();
-        else if(sortBy.equals("year"))cars = carRepository.findByOrderByYear();
-        else cars = (List<Car>) carRepository.findAll();
+    public Page<Car> getCarSortedBy(String sortBy, Pageable pageable) {
+        Page<Car> cars;
+        if(sortBy == null)return carRepository.findAll(pageable);
+        if(sortBy.equals("price"))cars = carRepository.findByOrderByPrice(pageable);
+        else if(sortBy.equals("fuel consumption"))cars = carRepository.findByOrderByFuelConsumption(pageable);
+        else if(sortBy.equals("fuel type"))cars = carRepository.findByOrderByFuelType(pageable);
+        else if(sortBy.equals("transmission"))cars = carRepository.findByOrderByTransmission(pageable);
+        else if(sortBy.equals("brand"))cars = carRepository.findByOrderByBrand(pageable);
+        else if(sortBy.equals("model"))cars = carRepository.findByOrderByModel(pageable);
+        else if(sortBy.equals("year"))cars = carRepository.findByOrderByYear(pageable);
+        else cars = carRepository.findAll(pageable);
         return cars;
     }
 
@@ -62,16 +55,6 @@ public class AutoRentServiceImpl implements AutoRentService{
     @Override
     public void saveOrder(Order order) {
         orderRepository.save(order);
-    }
-
-    @Override
-    public Order getOrderByUserId(User user) {
-        return orderRepository.findFirstByUserAndReturnTimeGreaterThan(user, LocalDateTime.now());
-    }
-
-    @Override
-    public void delete() {
-        orderRepository.deleteAll();
     }
 
     @Override

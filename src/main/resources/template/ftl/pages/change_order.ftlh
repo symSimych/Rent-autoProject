@@ -18,11 +18,11 @@
     <fieldset>
         <legend>Change Order</legend>
         <form name="ChangeOrder" action="/manager/order/${order.id}" method="post">
-            Place of filing : <input type="text" name="placeOfFiling" value=${order.placeOfFiling} />
-            Filing time : <input type="datetime-local" name="filingTime" value=${order.filingTime} />	<br/>
-            Place of return: <input type="text" name="placeOfReturn" value=${order.placeOfReturn} />
-            Return time: <input type="datetime-local" name="returnTime" value=${order.returnTime} />    <br/>
-            <input type="submit" value="   Confirm   " />
+            Place of filing : <input type="text" name="placeOfFiling" value="${order.placeOfFiling}" />
+            Filing time : <input type="datetime-local" name="filingTime" value="${order.filingTime}" />	<br/>
+            Place of return: <input type="text" name="placeOfReturn" value="${order.placeOfReturn}" />
+            Return time: <input type="datetime-local" name="returnTime" value="${order.returnTime}" />    <br/>
+            <input type="submit" value="Confirm" />
         </form>
     </fieldset>
 </@layout.page>

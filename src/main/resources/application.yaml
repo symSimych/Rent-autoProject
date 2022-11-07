@@ -27,6 +27,8 @@ spring:
   freemarker:
     templateLoaderPath:
       - "classpath:/template/ftl/"
+    exposeRequestAttributes:
+      - true
 
 ---
 

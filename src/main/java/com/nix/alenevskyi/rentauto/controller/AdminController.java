@@ -1,6 +1,5 @@
 package com.nix.alenevskyi.rentauto.controller;
 
-import com.nix.alenevskyi.rentauto.dto.CarDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.Role;
 import com.nix.alenevskyi.rentauto.entity.User;
@@ -30,14 +29,11 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin(@ModelAttribute("model") ModelMap model) {
-        model.addAttribute("carList", autoRentService.carList());
         return "/pages/admin";
     }
 
     @GetMapping("/admin/add_car")
     public String addCar(@ModelAttribute("model") ModelMap model) {
-        List<Car> cars = autoRentService.carList();
-        model.addAttribute("carList", cars);
         return "/pages/add_car";
     }
 
@@ -81,7 +77,7 @@ public class AdminController {
             @RequestParam(name = "bail") String bail,
             @RequestParam(name = "price") String price
     ) {
-        CarDto carDto = CarDto.builder()
+        Car car = Car.builder()
                 .brand(brand)
                 .model(carModel)
                 .bodyType(bodyType)
@@ -94,10 +90,9 @@ public class AdminController {
                 .tankVolume(Integer.valueOf(tankVolume))
                 .bail(Double.valueOf(bail))
                 .price(Double.valueOf(price))
+                .isPremium(false)
                 .build();
-        adminService.addNewCar(carDto);
-        List<Car> cars = autoRentService.carList();
-        model.addAttribute("carList", cars);
+        adminService.addNewCar(car);
         return new ModelAndView("/pages/add_car", model);
     }
 }

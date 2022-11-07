@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <form name="ConfirmOrder" action="/manager" method="post">
-                        <input type="hidden" name="carId" value=${order.car.id} />
+                        <input type="hidden" name="carId" value="${order.car.id}"/>
                         <input type="submit" value="Confirm"/>
                     </form>
                 </td>

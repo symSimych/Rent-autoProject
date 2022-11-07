@@ -1,6 +1,8 @@
 <#import "../layouts/main.ftlh" as layout>
+<#import "../partial/pager.ftlh" as p>
 <@layout.page>
     <a href="/manager" class="btn btn-info">Back</a>
+    <@p.pager url page />
     <table class="datatable">
         <tr>
             <th>brand</th> <b/>
@@ -12,7 +14,7 @@
             <th>transmission</th> <b/>
             <th></th>
         </tr>
-        <#list model["carList"] as car>
+        <#list page.content as car>
             <tr>
                 <td>${car.brand}</td>
                 <td>${car.model}</td>
@@ -24,5 +26,6 @@
                 <td><a href="/manager/car_manage/${car.id}" class="btn btn-info">Edit</a></td>
             </tr>
         </#list>
-        </table>
+    </table>
+    <@p.pager url page />
 </@layout.page>

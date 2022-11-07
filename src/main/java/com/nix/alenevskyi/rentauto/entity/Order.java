@@ -3,10 +3,7 @@ package com.nix.alenevskyi.rentauto.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Getter
@@ -43,4 +40,17 @@ public class Order {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "car_id")
     private Car car;
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", placeOfFiling='" + placeOfFiling + '\'' +
+                ", placeOfReturn='" + placeOfReturn + '\'' +
+                ", filingTime=" + filingTime +
+                ", returnTime=" + returnTime +
+                ", user=" + user +
+                ", car=" + car +
+                '}';
+    }
 }

@@ -1,28 +1,30 @@
 package com.nix.alenevskyi.rentauto.repositories;
 
 import com.nix.alenevskyi.rentauto.entity.Car;
-import org.springframework.data.jpa.repository.Query;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface CarRepository extends CrudRepository<Car, UUID> {
 
-    List<Car> findByOrderByPrice();
+    Page<Car> findAll(Pageable pageable);
 
-    List<Car> findByOrderByFuelConsumption();
+    Page<Car> findByOrderByPrice(Pageable pageable);
 
-    List<Car> findByOrderByFuelType();
+    Page<Car> findByOrderByFuelConsumption(Pageable pageable);
 
-    List<Car> findByOrderByTransmission();
+    Page<Car> findByOrderByFuelType(Pageable pageable);
 
-    List<Car> findByOrderByBrand();
+    Page<Car> findByOrderByTransmission(Pageable pageable);
 
-    List<Car> findByOrderByModel();
+    Page<Car> findByOrderByBrand(Pageable pageable);
 
-    List<Car> findByOrderByYear();
+    Page<Car> findByOrderByModel(Pageable pageable);
+
+    Page<Car> findByOrderByYear(Pageable pageable);
 }

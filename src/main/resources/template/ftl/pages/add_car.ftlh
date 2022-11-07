@@ -21,7 +21,4 @@
     </fieldset>
 
     <br/>
-
-    <#import "../partial/cars_list.ftlh" as carsList>
-    <@carsList.cars />
 </@layout.page>

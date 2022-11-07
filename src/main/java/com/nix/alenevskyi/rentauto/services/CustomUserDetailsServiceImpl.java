@@ -1,30 +1,35 @@
 package com.nix.alenevskyi.rentauto.services;
 
-import com.nix.alenevskyi.rentauto.dto.UserDto;
 import com.nix.alenevskyi.rentauto.entity.Role;
 import com.nix.alenevskyi.rentauto.entity.User;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.userDtoToEntity;
-
+//@NoArgsConstructor
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public boolean addNewUser(UserDto userdto) {
-        User user = userDtoToEntity(userdto);
+    public boolean addNewUser(User user) {
         if(userRepository.findByEmail(user.getEmail()) != null) return false;
+        user.setRoles(Set.of(Role.ROLE_USER));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }

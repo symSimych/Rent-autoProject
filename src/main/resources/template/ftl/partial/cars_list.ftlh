@@ -1,28 +1,27 @@
 <#macro cars>
-    <table class="datatable">
-    <tr>
-        <th>brand</th> <b/>
-        <th>model</th> <b/>
-        <th>price $</th> <b/>
-        <th>year</th> <b/>
-        <th>fuelType</th> <b/>
-        <th>fuelConsumption</th> <b/>
-        <th>transmission</th> <b/>
-        <th></th>
-    </tr>
+<div class="row row-cols-3 row-cols-md-4 g-4 mt-3">
     <#list model["carList"] as car>
     <#if car.getAvailable()>
-        <tr>
-            <td>${car.brand}</td>
-            <td>${car.model}</td>
-            <td>${car.price}</td>
-            <td>${car.year}</td>
-            <td>${car.fuelType}</td>
-            <td>${car.fuelConsumption}</td>
-            <td>${car.transmission}</td>
-            <td><a href="/all_cars/${car.id}" class="btn btn-info">More details</a></td>
-        </tr>
+      <div class="col">
+        <div class="card border-info mb-3 text-center" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">${car.brand} ${car.model}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Price: ${car.price} $/day</li>
+                <li class="list-group-item">Transmission: ${car.transmission}</li>
+                <li class="list-group-item">Year: ${car.year}</li>
+                <li class="list-group-item">Fuel type: ${car.fuelType}</li>
+                <li class="list-group-item">Fuel consumption: ${car.fuelConsumption}</li>
+            </ul>
+            <div class="card-body">
+                <a href="/all_cars/${car.id}" class="btn btn-info">More details</a>
+            </div>
+        </div>
+      </div>
     </#if>
+    <#else>
+    NO CARS
     </#list>
-    </table>
+</div>
 </#macro>

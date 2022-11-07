@@ -4,7 +4,7 @@
     <form action="/admin/edit_user" method="post">
         <#list roles as role>
             <div>
-                <label><input type="checkbox" name="${role}" ${user.roles?seq_contains(role)?string("checked", "")}>${role}</label>
+                <label><input type="checkbox" ${user.roles?seq_contains(role)?string("", "")} name="${role}"/>${role}</label>
             </div>
         </#list>
         <input type="hidden" value="${user.email}" name="email" />
