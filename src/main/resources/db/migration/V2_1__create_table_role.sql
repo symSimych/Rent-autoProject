@@ -8,3 +8,6 @@ create table if not exists Roles (
         on update no action
         on delete no action
 );
+
+insert into Roles (user_id, roles) values
+('name@gmail.com', 'ROLE_ADMIN');

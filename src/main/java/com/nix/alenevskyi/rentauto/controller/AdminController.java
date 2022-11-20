@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -22,77 +23,35 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
-    @Autowired
-    private AutoRentService autoRentService;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
 
     @GetMapping("/admin")
     public String admin(@ModelAttribute("model") ModelMap model) {
+        List<User> users = adminService.getAllUsers();
+        model.addAttribute("userList", users);
         return "/pages/admin";
     }
 
-    @GetMapping("/admin/add_car")
-    public String addCar(@ModelAttribute("model") ModelMap model) {
-        return "/pages/add_car";
-    }
-
-    @GetMapping("/admin/edit_user")
+    @GetMapping("/admin/edit-user")
     public String users(@ModelAttribute("model") ModelMap model) {
-        List<User> users = customUserDetailsService.getAllUsers();
+        List<User> users = adminService.getAllUsers();
         model.addAttribute("userList", users);
         return "/pages/users";
     }
 
-    @GetMapping("/admin/edit_user/{user}")
+    @GetMapping("/admin/edit-user/{user}")
     public ModelAndView editUser(@PathVariable("user") User user,
                            @ModelAttribute("model") ModelMap model
     ) {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
-        return new ModelAndView("/pages/edit_user", model);
+        return new ModelAndView("/pages/edit-user", model);
     }
 
-    @PostMapping("/admin/edit_user")
+    @PostMapping("/admin/edit-user")
     public String editUser(@RequestParam("email") User user,
                            @RequestParam Map<String, String> form
     ) {
-        customUserDetailsService.changeUserRole(user, form);
+        adminService.changeUserRole(user, form);
         return "redirect:/admin";
-    }
-
-    @PostMapping("/add_new_car")
-    public ModelAndView addNewCustomer(
-            @ModelAttribute("model") ModelMap model,
-            @RequestParam(name = "brand") String brand,
-            @RequestParam(name = "carModel") String carModel,
-            @RequestParam(name = "bodyType") String bodyType,
-            @RequestParam(name = "transmission") String transmission,
-            @RequestParam(name = "year") String year,
-            @RequestParam(name = "fuelType") String fuelType,
-            @RequestParam(name = "horsePower") String horsePower,
-            @RequestParam(name = "engineVolume") String engineVolume,
-            @RequestParam(name = "fuelConsumption") String fuelConsumption,
-            @RequestParam(name = "tankVolume") String tankVolume,
-            @RequestParam(name = "bail") String bail,
-            @RequestParam(name = "price") String price
-    ) {
-        Car car = Car.builder()
-                .brand(brand)
-                .model(carModel)
-                .bodyType(bodyType)
-                .transmission(transmission)
-                .year(year)
-                .fuelType(fuelType)
-                .horsePower(Integer.valueOf(horsePower))
-                .engineVolume(Double.valueOf(engineVolume))
-                .fuelConsumption(Double.valueOf(fuelConsumption))
-                .tankVolume(Integer.valueOf(tankVolume))
-                .bail(Double.valueOf(bail))
-                .price(Double.valueOf(price))
-                .isPremium(false)
-                .build();
-        adminService.addNewCar(car);
-        return new ModelAndView("/pages/add_car", model);
     }
 }

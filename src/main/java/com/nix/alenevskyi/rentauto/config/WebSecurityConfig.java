@@ -46,10 +46,7 @@ public class WebSecurityConfig {
                         .antMatchers( "/", "/registration").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
+                .formLogin().and()
                 .logout(LogoutConfigurer::permitAll)
                 .csrf().disable();
 

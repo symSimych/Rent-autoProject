@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface CustomUserDetailsService extends UserDetailsService {
+    void delete(String email);
     boolean addNewUser(User user);
-    List<User> getAllUsers();
-    void changeUserRole(User user, Map<String, String> form);
 }

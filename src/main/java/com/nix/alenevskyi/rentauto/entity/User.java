@@ -17,7 +17,6 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,12 +44,10 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     @NotBlank(message = "Password cannot be empty")
-    @Size(min = 1, max = 5, message = "invalid length of password")
     String password;
 
     @Transient
-    @NotBlank(message = "Password confirmation cannot be empty")
-    @Size(min = 1, max = 5, message = "invalid length of password")
+//    @NotBlank(message = "Password confirmation cannot be empty")
     String confirmPassword;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

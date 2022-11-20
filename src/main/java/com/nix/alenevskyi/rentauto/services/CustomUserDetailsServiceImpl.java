@@ -5,6 +5,9 @@ import com.nix.alenevskyi.rentauto.entity.User;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 //@NoArgsConstructor
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     @Autowired
@@ -26,31 +30,19 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
+    public void delete(String email) {
+        userRepository.delete(userRepository.findByEmail(email));
+        log.info("User {} delete", email);
+    }
+
+    @Override
     public boolean addNewUser(User user) {
         if(userRepository.findByEmail(user.getEmail()) != null) return false;
         user.setRoles(Set.of(Role.ROLE_USER));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        log.info("User {} save in table", user.getEmail());
         return true;
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return (List<User>) userRepository.findAll();
-    }
-
-    @Override
-    public void changeUserRole(User user, Map<String, String> form) {
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-        user.getRoles().clear();
-        for (String key:form.keySet()) {
-            if(roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
-        userRepository.save(user);
     }
 
     @Override

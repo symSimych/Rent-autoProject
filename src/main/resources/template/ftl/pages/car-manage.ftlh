@@ -2,9 +2,9 @@
 <#import "../partial/pager.ftlh" as p>
 <@layout.page>
     <a href="/manager" class="btn btn-info">Back</a>
-    <@p.pager url page />
-    <table class="datatable">
-        <tr>
+    <a href="/manager/add-car" class="btn btn-info">Add car</a>
+    <table class="table table-bordered border-info">
+        <tr class="table-info">
             <th>brand</th> <b/>
             <th>model</th> <b/>
             <th>price $</th> <b/>
@@ -12,6 +12,7 @@
             <th>fuelType</th> <b/>
             <th>fuelConsumption</th> <b/>
             <th>transmission</th> <b/>
+            <th>available</th> <b/>
             <th></th>
         </tr>
         <#list page.content as car>
@@ -23,9 +24,9 @@
                 <td>${car.fuelType}</td>
                 <td>${car.fuelConsumption}</td>
                 <td>${car.transmission}</td>
-                <td><a href="/manager/car_manage/${car.id}" class="btn btn-info">Edit</a></td>
+                <td>${car.available?string('available', 'unavailable')}</td>
+                <td><a href="/manager/car-manage/${car.id}" >Edit</a></td>
             </tr>
         </#list>
     </table>
-    <@p.pager url page />
 </@layout.page>

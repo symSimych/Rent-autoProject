@@ -15,7 +15,7 @@
                 <li class="list-group-item">Fuel consumption: ${car.fuelConsumption}</li>
             </ul>
             <div class="card-body">
-                <a href="/all_cars/${car.id}" class="btn btn-info">More details</a>
+                <a href="/all-cars/${car.id}" class="btn btn-info">More details</a>
             </div>
         </div>
       </div>

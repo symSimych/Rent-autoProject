@@ -7,7 +7,6 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,14 +55,17 @@ public class Car {
     @Column(name = "price")
     Double price;
 
-    @Column(name = "is_premium")
-    Boolean isPremium;
-
     @Column(name = "available")
     Boolean available;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "car")
     private Set<Order> orders = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "car")
+    private List<Image> images = new ArrayList<>();
+
+    @Column(name = "preview_image_id")
+    UUID previewImageId;
 
     public void addOrder(Order order) {
         orders.add(order);
@@ -73,6 +75,20 @@ public class Car {
     public void removeOrder(Order order) {
         orders.remove(order);
         order.setCar(null);
+    }
+
+    public void addImage(Image image) {
+        images.add(image);
+        image.setCar(this);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setCar(null);
+    }
+
+    public boolean haveImages() {
+        return !images.isEmpty();
     }
 
     @PrePersist
@@ -96,9 +112,7 @@ public class Car {
                 ", fuelConsumption=" + fuelConsumption +
                 ", bail=" + bail +
                 ", price=" + price +
-                ", isPremium=" + isPremium +
                 ", available=" + available +
-//                ", orders=" + orders +
                 '}';
     }
 }

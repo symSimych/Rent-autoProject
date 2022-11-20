@@ -4,6 +4,7 @@ create table if not exists Orders (
     place_of_return varchar not null,
     filing_time timestamp not null,
     return_time timestamp not null,
+    confirmed boolean,
     user_id varchar,
     car_id uuid,
     primary key (id),

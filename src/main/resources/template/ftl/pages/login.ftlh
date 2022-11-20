@@ -15,13 +15,13 @@
             </div>
           </div>
           <div class="form-group row mt-3">
-          <div class="col-sm-6"
-             <button class="btn btn-info"><a href="/registration" class="btn btn-info">Register</a></button>
-          </div>
-            <div class="col-sm-6">
-                <button class="btn btn-info" type="submit">Sign In</button>
-            </div>
+                      <div class="col-sm-6">
+                          <button class="btn btn-info" type="submit">Sign In</button>
+                      </div>
 
+            <div class="col-sm-6"
+                <button class="btn btn-info"><a href="/registration" class="btn btn-info">Register</a></button>
+            </div>
           </div>
     </form>
 </div>

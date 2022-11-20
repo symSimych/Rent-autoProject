@@ -1,6 +1,7 @@
 package com.nix.alenevskyi.rentauto.controller;
 
 import com.nix.alenevskyi.rentauto.entity.Car;
+import com.nix.alenevskyi.rentauto.entity.Image;
 import com.nix.alenevskyi.rentauto.entity.Order;
 import com.nix.alenevskyi.rentauto.entity.User;
 import com.nix.alenevskyi.rentauto.services.AutoRentService;
@@ -19,8 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.nix.alenevskyi.rentauto.utils.Util.getCurrentUsername;
 import static com.nix.alenevskyi.rentauto.utils.Util.getErrors;
@@ -35,45 +35,54 @@ public class MainController {
 
     @GetMapping("/")
     public ModelAndView mainPage(@ModelAttribute("model") ModelMap model){
+//        autoRentService.deletePolo();
+//        autoRentService.delete();
         User user = autoRentService.getUserByUsername(getCurrentUsername());
         model.addAttribute("user", user);
         return new ModelAndView("/index", model);
     }
 
 
-    @GetMapping("/all_cars")
-    public String allCarsSortBy(@RequestParam(name = "sorted_by", required = false) String sortBy,
+    @GetMapping("/all-cars")
+    public String allCarsSortBy(@RequestParam(name = "sortBy", required = false) String sortBy,
                                 Model model,
-                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+                                @PageableDefault(size = 8, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
     ) {
         Page<Car> page = autoRentService.getCarSortedBy(sortBy, pageable);
-        model.addAttribute("url", "/all_cars");
+        List<Image> images = new ArrayList<>();
+        for (Car car:page) {
+            if(!car.getImages().isEmpty()){
+                images.add(car.getImages().get(0));
+            }
+        }
+        model.addAttribute("url", "/all-cars");
         model.addAttribute("page", page);
-        return "/pages/all_cars";
+        model.addAttribute("images", images);
+        return "/pages/all-cars";
     }
 
-    @GetMapping("/all_cars/{id}")
-    public ModelAndView carDetails(@PathVariable(value = "id") UUID id ,
-                                   @ModelAttribute("model") ModelMap model){
-        Car car = autoRentService.getCar(id);
+    @GetMapping("/all-cars/{car}")
+    public ModelAndView carDetails(@PathVariable(value = "car") Car car,
+                                   @ModelAttribute("model") ModelMap model
+    ) {
         model.addAttribute("car", car);
-        return new ModelAndView("/pages/car_details", model);
+        return new ModelAndView("/pages/car-details", model);
     }
 
-    @PostMapping(value = "/all_cars")
+    @PostMapping(value = "/all-cars/{car}")
     public String addNewOrder(
             Model model,
             @RequestParam(name = "placeOfFiling") String placeOfFiling,
             @RequestParam(name = "filingTime") String filingTime,
             @RequestParam(name = "placeOfReturn") String placeOfReturn,
             @RequestParam(name = "returnTime") String returnTime,
-            @RequestParam(name = "carId") Car car,
-            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            @RequestParam(name = "carId") Car car
+//            @PageableDefault(size = 8, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
     ) {
         User user = autoRentService.getUserByUsername(getCurrentUsername());
         Order order = Order.builder()
-                .placeOfFiling(placeOfFiling)
-                .placeOfReturn(placeOfReturn)
+                .placeOfFiling(placeOfFiling.toLowerCase(Locale.ROOT).replaceAll(" ", ""))
+                .placeOfReturn(placeOfReturn.toLowerCase(Locale.ROOT).replaceAll(" ", ""))
                 .filingTime(LocalDateTime.parse(filingTime))
                 .returnTime(LocalDateTime.parse(returnTime))
                 .user(user)
@@ -81,10 +90,11 @@ public class MainController {
                 .build();
         autoRentService.saveOrder(order);
 
-        Page<Car> cars = autoRentService.carList(pageable);
-        model.addAttribute("page", cars);
-        model.addAttribute("url", "all_cars");
-        return "/pages/all_cars";
+//        Page<Car> cars = autoRentService.carList(pageable);
+//        model.addAttribute("page", cars);
+//        model.addAttribute("url", "all-cars");
+        model.addAttribute("car", car);
+        return "/pages/car-details";
     }
 
     @GetMapping("/registration")
@@ -94,13 +104,12 @@ public class MainController {
 
     @PostMapping("/registration")
     public String addUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        if(bindingResult.hasErrors()){
-            Map<String, String> errorsMap = getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            return "/pages/registration";
-        }
         if(user.getPassword() != null && !user.getPassword().equals("") && !user.getPassword().equals(user.getConfirmPassword())) {
             model.addAttribute("passwordError", "Passwords are different");
+        }
+        if(bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = getErrors(bindingResult);
+            model.mergeAttributes(errorsMap);
             return "/pages/registration";
         }
         if(!userService.addNewUser(user)){
@@ -110,8 +119,8 @@ public class MainController {
         return "redirect:/login";
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "login";
-    }
+//    @GetMapping("/login")
+//    public String loginPage(){
+//        return "/pages/login";
+//    }
 }

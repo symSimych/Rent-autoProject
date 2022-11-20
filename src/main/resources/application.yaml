@@ -1,5 +1,9 @@
 spring:
   profiles.active: dev
+  http:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
   jpa:
     hibernate:
       ddl-auto: "validate"
@@ -42,3 +46,6 @@ enabled: true
 
 server:
   port: 8082
+  error:
+    whitelabel:
+      enabled: false

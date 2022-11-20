@@ -5,12 +5,13 @@
             <a href="/" class="btn btn-info">Back</a>
         </div>
         <div class="form-group mt-3">
-                <form class="row g-3" action="/all_cars" method="get">
+                <form class="row g-3" action="/all-cars" method="get">
                 <div class="col-auto">
                     <label class="form-label">Sorted by</label>
                 </div>
                 <div class="col-auto">
-                 <select class="form-select" aria-label="sorted_by" name="sorted_by">
+                 <select class="form-select" aria-label="sortBy" name="sortBy">
+                    <option value="" selected></option>
                     <option value="price">price</option>
                     <option value="fuel consumption">fuel consumption</option>
                     <option value="fuel type">fuel type</option>
@@ -28,9 +29,11 @@
         <@p.pager url page />
         <div class="row row-cols-3 row-cols-md-4 g-4 mt-3" id="carList">
             <#list page.content as car>
-            <#if car.getAvailable()>
               <div class="col">
                 <div class="card border-info mb-3 text-center" style="width: 18rem;">
+                    <#if car.haveImages()>
+                    <img class="card-img-top" src="/images/${car.previewImageId}" alt="${car.brand} ${car.model}">
+                    </#if>
                     <div class="card-body">
                         <h5 class="card-title">${car.brand} ${car.model}</h5>
                     </div>
@@ -42,11 +45,10 @@
                         <li class="list-group-item">Fuel consumption: ${car.fuelConsumption}</li>
                     </ul>
                     <div class="card-body">
-                        <a href="/all_cars/${car.id}" class="btn btn-info">More details</a>
+                        <a href="/all-cars/${car.id}" class="btn btn-info">More details</a>
                     </div>
                 </div>
               </div>
-            </#if>
             <#else>
             NO CARS
             </#list>

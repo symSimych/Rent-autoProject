@@ -40,7 +40,7 @@
           <div class="form-group row mt-3">
               <label class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-10">
-                  <input type="email" name="email" class="form-control ${(emailError??)?string('is-invalid', '')}"
+                  <input type="email" name="email" autocomplete="off" class="form-control ${(emailError??)?string('is-invalid', '')}"
                   value="<#if user??> ${user.email} </#if>" placeholder="Email" />
                   <#if emailError??>
                       <div class="invalid-feedback">
@@ -52,7 +52,7 @@
           <div class="form-group row mt-3">
               <label class="col-sm-2 col-form-label">Password:</label>
               <div class="col-sm-10">
-                  <input type="password" name="password" class="form-control ${(passwordError??)?string('is-invalid', '')}" placeholder="Password" />
+                  <input type="password" name="password" autocomplete="off" class="form-control ${(passwordError??)?string('is-invalid', '')}" placeholder="Password" />
                   <#if passwordError??>
                       <div class="invalid-feedback">
                         ${passwordError}
@@ -63,7 +63,7 @@
           <div class="form-group row mt-3">
               <label class="col-sm-2 col-form-label">Confirm password:</label>
               <div class="col-sm-10">
-                  <input type="password " name="confirmPassword" class="form-control ${(confirmPasswordError??)?string('is-invalid', '')}" placeholder="Confirm password" />
+                  <input type="password" name="confirmPassword" autocomplete="off" class="form-control ${(confirmPasswordError??)?string('is-invalid', '')}" placeholder="Confirm password" />
                   <#if confirmPasswordError??>
                       <div class="invalid-feedback">
                         ${confirmPasswordError}

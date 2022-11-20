@@ -19,7 +19,7 @@
                 <td>${user.email}</td>
                 <td>${user.password}</td>
                 <td><#list user.roles as role>${role}</#list></td>
-                <td><a href="edit_user/${user.email}">Edit</a></td>
+                <td><a href="edit-user/${user.email}">Edit</a></td>
             </tr>
         </#list>
     </table>

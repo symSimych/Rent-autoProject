@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,6 +32,9 @@ public class Order {
     @Column(name = "return_time")
     LocalDateTime returnTime;
 
+    @Column(name = "confirmed")
+    Boolean confirmed;
+
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -40,6 +42,11 @@ public class Order {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "car_id")
     private Car car;
+
+    @PrePersist
+    public void setConfirmed() {
+        confirmed = false;
+    }
 
     @Override
     public String toString() {
@@ -49,6 +56,7 @@ public class Order {
                 ", placeOfReturn='" + placeOfReturn + '\'' +
                 ", filingTime=" + filingTime +
                 ", returnTime=" + returnTime +
+                ", confirmed=" + confirmed +
                 ", user=" + user +
                 ", car=" + car +
                 '}';

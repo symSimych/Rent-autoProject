@@ -8,7 +8,6 @@ import com.nix.alenevskyi.rentauto.repositories.OrderRepository;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -64,7 +62,7 @@ class AutoRentServiceImplTest {
         Pageable pageable = null;
         Page<Car> cars = autoRentService.carList(pageable);
 
-        Mockito.verify(carRepository, Mockito.times(1)).findAll(pageable);
+        Mockito.verify(carRepository, Mockito.times(1)).findByAvailable(pageable, true);
     }
 
     @Test
@@ -75,21 +73,11 @@ class AutoRentServiceImplTest {
     }
 
     @Test
-    public void getCarTest(){
-        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () ->{
-            UUID id = null;
-            autoRentService.getCar(id);
-        });
-
-        assertTrue(thrown.getMessage().contains("No value present"));
-    }
-
-    @Test
     public void getCarsSortedByNullTest(){
         String sortBy = null;
         Pageable pageable = null;
         Page<Car> cars = autoRentService.getCarSortedBy(sortBy, pageable);
-        Mockito.verify(carRepository, Mockito.times(1)).findAll(pageable);
+        Mockito.verify(carRepository, Mockito.times(1)).findByAvailable(pageable, true);
     }
 
     @Test
@@ -152,7 +140,7 @@ class AutoRentServiceImplTest {
     public void getCarsSortedByTest(){
         Pageable pageable = null;
         Page<Car> cars = autoRentService.getCarSortedBy(ArgumentMatchers.anyString(), pageable);
-        Mockito.verify(carRepository, Mockito.times(1)).findAll(pageable);
+        Mockito.verify(carRepository, Mockito.times(1)).findByAvailable(pageable, true);
     }
 
     @Test

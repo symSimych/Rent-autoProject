@@ -65,21 +65,6 @@ class CustomUserDetailsServiceImplTest {
         Mockito.verify(userRepository, Mockito.times(0)).save(user);
     }
 
-    @Test
-    public void changeUserRoleTest(){
-        Set<Role> set = new HashSet<>();
-        set.add(Role.ROLE_USER);
-        User user = User.builder()
-                .email("mail@mail.com")
-                .roles(set)
-                .build();
-        Map<String, String> rolesMap = new HashMap<>();
-        rolesMap.put(Role.ROLE_ADMIN.getRoleName(), "ROLE_ADMIN");
-        customUserDetailsService.changeUserRole(user, rolesMap);
-
-        assertTrue(CoreMatchers.is(user.getRoles()).matches(Set.of(Role.ROLE_ADMIN)));
-        Mockito.verify(userRepository, Mockito.times(1)).save(user);
-    }
 
     @Test
     public void loadUserByEmailTest() {
@@ -90,9 +75,4 @@ class CustomUserDetailsServiceImplTest {
         assertTrue(thrown.getMessage().contains("Username was not found!"));
     }
 
-    @Test
-    public void getUsersTest() {
-        List<User> user = customUserDetailsService.getAllUsers();
-        Mockito.verify(userRepository, Mockito.times(1)).findAll();
-    }
 }
