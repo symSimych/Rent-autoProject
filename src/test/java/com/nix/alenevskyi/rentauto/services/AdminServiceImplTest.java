@@ -1,11 +1,8 @@
 package com.nix.alenevskyi.rentauto.services;
 
-import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.Role;
 import com.nix.alenevskyi.rentauto.entity.User;
-import com.nix.alenevskyi.rentauto.repositories.CarRepository;
 import com.nix.alenevskyi.rentauto.repositories.UserRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

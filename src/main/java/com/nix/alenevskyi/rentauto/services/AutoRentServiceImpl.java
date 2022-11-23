@@ -118,22 +118,26 @@ public class AutoRentServiceImpl implements AutoRentService{
                 .map(Util::toImage)
                 .collect(Collectors.toList());
 
-        car.setImages(images);
 
         carRepository.save(car);
+
         for (Image image:images) {
             image.setCar(car);
             imageRepository.save(image);
             log.info("Images {} save in table", image.getFileName());
         }
+        car.setImages(images);
         car.setPreviewImageId(car.getImages().get(0).getId());
+        carRepository.save(car);
         log.info("Car {} save in table", car.getId());
     }
 
 
     @Override
     public void delete() {
+
         imageRepository.deleteAll();
+        carRepository.deleteAll();
     }
 
 }

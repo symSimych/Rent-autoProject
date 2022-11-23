@@ -1,8 +1,6 @@
 package com.nix.alenevskyi.rentauto.services;
 
-import com.nix.alenevskyi.rentauto.dto.CarDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
-import com.nix.alenevskyi.rentauto.entity.Image;
 import com.nix.alenevskyi.rentauto.entity.Order;
 import com.nix.alenevskyi.rentauto.entity.User;
 import com.nix.alenevskyi.rentauto.repositories.CarRepository;
@@ -22,10 +20,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
-
-import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.carDtoToCar;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -162,33 +158,6 @@ class AutoRentServiceImplTest {
         Mockito.verify(carRepository, Mockito.times(1)).save(car);
         Mockito.verify(imageRepository, Mockito.times(1)).save(car.getImages().get(0));
     }
-
-//    @Test
-//    public void updateCarWithoutImagesTest() {
-//        byte[] bytes = new byte[0];
-//        MultipartFile[] file = {new MockMultipartFile("file.jpg", "file.jpg", "image/jpg", bytes)};
-//        List<MultipartFile> files = List.of(file);
-//        Car car = Car.builder()
-//                .id(UUID.randomUUID())
-//                .build();
-//        autoRentService.updateCar(car, files, "true");
-//        car.setAvailable(true);
-//        Mockito.verify(carRepository, Mockito.times(1)).save(car);
-//    }
-
-//    @Test
-//    public void updateCarWithImagesTest() {
-//        byte[] bytes = {1,2,3,41,123,123};
-//        MultipartFile[] file = {new MockMultipartFile("file.jpg", "file.jpg", "image/jpg", bytes)};
-//        List<MultipartFile> files = List.of(file);
-//        Car car = Car.builder()
-//                .id(UUID.randomUUID())
-//                .images(new ArrayList<Image>(Collections.singleton(new Image())) )
-//                .build();
-//        autoRentService.updateCar(car, files, "true");
-//        Mockito.verify(carRepository, Mockito.times(1)).save(car);
-//        Mockito.verify(imageRepository, Mockito.times(1)).save(car.getImages().get(1));
-//    }
 
     @Test
     public void updateOrderTest() {

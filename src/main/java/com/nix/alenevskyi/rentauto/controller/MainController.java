@@ -35,13 +35,11 @@ public class MainController {
 
     @GetMapping("/")
     public ModelAndView mainPage(@ModelAttribute("model") ModelMap model){
-//        autoRentService.deletePolo();
-//        autoRentService.delete();
+        autoRentService.delete();
         User user = autoRentService.getUserByUsername(getCurrentUsername());
         model.addAttribute("user", user);
         return new ModelAndView("/index", model);
     }
-
 
     @GetMapping("/all-cars")
     public String allCarsSortBy(@RequestParam(name = "sortBy", required = false) String sortBy,
