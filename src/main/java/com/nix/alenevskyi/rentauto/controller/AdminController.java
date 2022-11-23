@@ -48,7 +48,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/edit-user")
-    public String editUser(@RequestParam("email") User user,
+    public String editUser(@RequestParam("user") User user,
                            @RequestParam Map<String, String> form
     ) {
         adminService.changeUserRole(user, form);

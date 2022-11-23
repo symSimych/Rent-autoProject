@@ -7,7 +7,7 @@
                 <label><input type="checkbox" ${user.roles?seq_contains(role)?string("", "")} name="${role}"/>${role}</label>
             </div>
         </#list>
-        <input type="hidden" value="${user.email}" name="email" />
+        <input type="hidden" value="${user.email}" name="user" />
         <input type="submit" value="Save"/>
     </form>
 </@layout.page>

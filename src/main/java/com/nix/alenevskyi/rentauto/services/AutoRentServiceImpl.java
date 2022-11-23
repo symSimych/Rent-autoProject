@@ -1,7 +1,5 @@
 package com.nix.alenevskyi.rentauto.services;
 
-import com.nix.alenevskyi.rentauto.dto.CarDto;
-import com.nix.alenevskyi.rentauto.dto.OrderDto;
 import com.nix.alenevskyi.rentauto.entity.Car;
 import com.nix.alenevskyi.rentauto.entity.Image;
 import com.nix.alenevskyi.rentauto.entity.Order;
@@ -21,9 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.carDtoToCar;
-import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.orderDtoToOrder;
 
 @RequiredArgsConstructor
 @Service
@@ -68,8 +63,7 @@ public class AutoRentServiceImpl implements AutoRentService{
     }
 
     @Override
-    public void updateOrder(OrderDto orderDto) {
-        Order order = orderDtoToOrder(orderDto);
+    public void updateOrder(Order order) {
         orderRepository.save(order);
         log.info("Order {} update", order.getId());
     }
@@ -98,15 +92,14 @@ public class AutoRentServiceImpl implements AutoRentService{
     }
 
     @Override
-    public void updateCar(CarDto carDto, List<MultipartFile> files, String status) {
-        Car car = carDtoToCar(carDto);
+    public void updateCar(Car car, List<MultipartFile> files, String status) {
         if(status != null & !Objects.equals(status, "")){
             status = status.replaceAll(",", "");
             car.setAvailable(Boolean.valueOf(status));
         }
         if(files.get(0).getSize() != 0){
             List<Image> images = files.stream()
-                    .map(Util::toImageEntity).toList();
+                    .map(Util::toImage).toList();
             for (Image image:images) {
                 image.setCar(car);
                 imageRepository.save(image);
@@ -122,23 +115,25 @@ public class AutoRentServiceImpl implements AutoRentService{
     @Override
     public void addNewCar(Car car, List<MultipartFile> files) {
         List<Image> images = files.stream()
-                .map(Util::toImageEntity)
+                .map(Util::toImage)
                 .collect(Collectors.toList());
+
+        car.setImages(images);
+
+        carRepository.save(car);
         for (Image image:images) {
             image.setCar(car);
             imageRepository.save(image);
             log.info("Images {} save in table", image.getFileName());
         }
-        car.setImages(images);
         car.setPreviewImageId(car.getImages().get(0).getId());
-        carRepository.save(car);
         log.info("Car {} save in table", car.getId());
     }
 
 
     @Override
     public void delete() {
-        orderRepository.deleteAll();
+        imageRepository.deleteAll();
     }
 
 }

@@ -24,21 +24,6 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer(){
-//        return (web -> web.ignoring()
-//                .antMatchers( "/registration"));
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain configure (HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity
-//                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-//                .formLogin()/*.loginPage("/login").permitAll()*/.and()
-//                .csrf().disable();
-//        return httpSecurity.build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -52,7 +37,6 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){

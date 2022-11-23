@@ -35,7 +35,7 @@ public class Image {
     @Column(name = "bytes")
     byte[] bytes;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "car_id")
     Car car;
 }

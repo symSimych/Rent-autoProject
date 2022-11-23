@@ -20,10 +20,10 @@ public class HandleErrorController {
             int statusCode = Integer.parseInt(status.toString());
 
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
-                return "/pages/error-404";
+                return "/error-404";
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                return "/pages/error-500";
+                return "/error-500";
             }
         }
         return "/pages/error";

@@ -1,23 +1,28 @@
 version: "3.9"
 services:
   server:
-    networks:
-      - default
+    hostname: localhost
+#    network_mode: host
     build:
       context: ./docker
       dockerfile: postgres_server
     ports:
       - "5432:5432"
   pga:
-    networks:
-      - default
     build:
       context: ./docker
       dockerfile: postgres_pga
     depends_on:
-        - server
+      - server
+#    network_mode: host
     ports:
       - "5433:80"
-networks:
-  default:
-    name: custom
+  application:
+#    network_mode: host
+    build:
+      context: ./docker
+      dockerfile: application
+    depends_on:
+      - server
+    ports:
+      - "8082:8082"

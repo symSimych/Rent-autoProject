@@ -45,7 +45,7 @@ class CustomUserDetailsServiceImplTest {
         boolean isCreate = customUserDetailsService.addNewUser(user);
 
         assertTrue(isCreate);
-        assertTrue(CoreMatchers.is(user.getRoles()).matches(Set.of(Role.ROLE_ADMIN)));
+        assertTrue(CoreMatchers.is(user.getRoles()).matches(Set.of(Role.ROLE_USER)));
 
         Mockito.verify(userRepository, Mockito.times(1)).save(user);
     }

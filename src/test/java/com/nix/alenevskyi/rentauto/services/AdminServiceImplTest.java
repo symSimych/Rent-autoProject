@@ -29,14 +29,6 @@ class AdminServiceImplTest {
     @MockBean
     private UserRepository userRepository;
 
-//    @Test
-//    public void addCarTest() {
-//        Car car = new Car();
-//        adminService.addNewCar(car);
-//        Mockito.verify(carRepository, Mockito.times(1)).save(car);
-//    }
-
-
     @Test
     public void getUsersTest() {
         List<User> user = adminService.getAllUsers();

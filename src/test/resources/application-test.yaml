@@ -1,0 +1,51 @@
+spring:
+  profiles.active: test
+  http:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  jpa:
+    hibernate:
+      ddl-auto: "validate"
+      dialect: "PostgreSQLDialect"
+      default_schema: "auto_rent_test"
+    show-sql: true
+
+  datasource:
+    initialization-mode: always
+    url: "jdbc:postgresql://localhost:5432/auto_rent_test"
+    username: "admin"
+    password: "admin"
+
+  flyway:
+    url: "jdbc:postgresql://localhost:5432/auto_rent_test?ssl=false"
+    user: "admin"
+    password: "admin"
+    locations: "classpath:/db"
+    baselineOnMigrate: true
+
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+  freemarker:
+    templateLoaderPath:
+      - "classpath:/template/ftl/"
+    exposeRequestAttributes:
+      - true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+name: test-spring
+environment: develop
+enabled: true
+
+server:
+  port: 8082
+  error:
+    whitelabel:
+      enabled: false

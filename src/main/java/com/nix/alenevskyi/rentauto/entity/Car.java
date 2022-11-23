@@ -68,22 +68,22 @@ public class Car {
     UUID previewImageId;
 
     public void addOrder(Order order) {
-        orders.add(order);
+        getOrders().add(order);
         order.setCar(this);
     }
 
     public void removeOrder(Order order) {
-        orders.remove(order);
+        getOrders().remove(order);
         order.setCar(null);
     }
 
     public void addImage(Image image) {
-        images.add(image);
+        getImages().add(image);
         image.setCar(this);
     }
 
     public void removeImage(Image image) {
-        images.remove(image);
+        getImages().remove(image);
         image.setCar(null);
     }
 

@@ -85,7 +85,7 @@
               <label class="col-sm-2 col-form-label">Status:</label>
               <div class="col-sm-10">
                 <select name="status" class="form-control">
-                    <option value="<#if car??>${car.available?string('available','unavailable')}</#if>></option>
+                    <option value=""></option>
                     <option value="true">available</option>
                     <option value="false">unavailable</option>
                 </select>

@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.carDtoToCar;
+import static com.nix.alenevskyi.rentauto.utils.DtoToEntity.orderDtoToOrder;
+
 @Controller
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public class ManagerController {
@@ -40,7 +43,7 @@ public class ManagerController {
     public String confirmOrder(@ModelAttribute("model") ModelMap model,
                                @RequestParam(name = "carId", required = false) Car car,
                                @RequestParam(name = "orderId", required = false) Order order,
-                               @RequestParam(name = "phone_number", required = false) String phoneNumber
+                               @RequestParam(name = "phoneNumber", required = false) String phoneNumber
     ) {
         if(car != null){
             car.setAvailable(false);
@@ -59,7 +62,7 @@ public class ManagerController {
     }
 
     @GetMapping("/manager/order/{order}")
-    public ModelAndView changeOrder(@ModelAttribute("model") ModelMap model,
+    public ModelAndView orderDetails(@ModelAttribute("model") ModelMap model,
                                     @PathVariable("order") Order order
     ) {
         model.addAttribute("order", order);
@@ -67,7 +70,7 @@ public class ManagerController {
     }
 
     @PostMapping("/manager/order/{order}")
-    public String confirmOrder(
+    public String changeOrder(
             @ModelAttribute("model") ModelMap model,
             @PathVariable("order") Order order,
             @RequestParam(name = "placeOfFiling") String placeOfFiling,
@@ -85,10 +88,10 @@ public class ManagerController {
                 .car(order.getCar())
                 .id(order.getId())
                 .build();
-        autoRentService.updateOrder(orderDto);
+        autoRentService.updateOrder(orderDtoToOrder(orderDto));
 
         model.addAttribute("orderList", autoRentService.getOrders());
-        return "/pages/manager";
+        return "redirect:/manager";
     }
 
     @GetMapping("/manager/car-manage")
@@ -147,7 +150,7 @@ public class ManagerController {
                 .orders(car.getOrders())
                 .previewImageId(car.getPreviewImageId())
                 .build();
-        autoRentService.updateCar(carDto, multipartFiles, status);
+        autoRentService.updateCar(carDtoToCar(carDto), multipartFiles, status);
         model.addAttribute("car", car);
         return "/pages/edit-car";
     }
@@ -161,35 +164,9 @@ public class ManagerController {
     public ModelAndView addNewCar(
             @ModelAttribute(name = "car") Car car,
             @ModelAttribute("model") ModelMap model,
-//            @RequestParam(name = "brand") String brand,
-//            @RequestParam(name = "carModel") String carModel,
-//            @RequestParam(name = "bodyType") String bodyType,
-//            @RequestParam(name = "transmission") String transmission,
-//            @RequestParam(name = "year") String year,
-//            @RequestParam(name = "fuelType") String fuelType,
-//            @RequestParam(name = "horsePower") String horsePower,
-//            @RequestParam(name = "engineVolume") String engineVolume,
-//            @RequestParam(name = "fuelConsumption") String fuelConsumption,
-//            @RequestParam(name = "tankVolume") String tankVolume,
-//            @RequestParam(name = "bail") String bail,
-//            @RequestParam(name = "price") String price,
             @RequestParam(name = "files") MultipartFile[] files
     ) {
         List<MultipartFile> multipartFiles = List.of(files);
-//        Car car = Car.builder()
-//                .brand(brand)
-//                .model(carModel)
-//                .bodyType(bodyType)
-//                .transmission(transmission)
-//                .year(year)
-//                .fuelType(fuelType)
-//                .horsePower(Integer.valueOf(horsePower))
-//                .engineVolume(Double.valueOf(engineVolume))
-//                .fuelConsumption(Double.valueOf(fuelConsumption))
-//                .tankVolume(Integer.valueOf(tankVolume))
-//                .bail(Double.valueOf(bail))
-//                .price(Double.valueOf(price))
-//                .build();
         autoRentService.addNewCar(car, multipartFiles);
         return new ModelAndView("/pages/add-car", model);
     }

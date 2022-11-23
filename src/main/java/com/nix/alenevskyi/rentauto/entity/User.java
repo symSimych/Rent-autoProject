@@ -47,7 +47,6 @@ public class User implements UserDetails {
     String password;
 
     @Transient
-//    @NotBlank(message = "Password confirmation cannot be empty")
     String confirmPassword;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

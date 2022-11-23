@@ -23,7 +23,7 @@ public class Util {
                         FieldError::getDefaultMessage));
     }
 
-    public static Image toImageEntity(MultipartFile file){
+    public static Image toImage(MultipartFile file){
         Image image = null;
         try {
             image = Image.builder()

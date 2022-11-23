@@ -16,12 +16,12 @@ public interface AutoRentService {
     Page<Car> carList(Pageable pageable);
     Page<Car> getCarSortedBy(String sortBy, Pageable pageable);
     User getUserByUsername(String username);
-    void updateOrder(OrderDto orderDto);
+    void updateOrder(Order order);
     void saveOrder(Order order);
     List<Order> getOrders();
     void saveCar(Car car);
     List<Order> getOrderByUserPhoneNumber(String phoneNumber);
-    void updateCar(CarDto carDto, List<MultipartFile> files, String status);
+    void updateCar(Car car, List<MultipartFile> files, String status);
     void addNewCar(Car car, List<MultipartFile> files);
     void delete();
 }

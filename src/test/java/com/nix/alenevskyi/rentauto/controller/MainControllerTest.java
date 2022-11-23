@@ -1,12 +1,10 @@
 package com.nix.alenevskyi.rentauto.controller;
 
-import com.nix.alenevskyi.rentauto.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.BasicJsonTester;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,96 +21,129 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithUserDetails(value = "name@gmail.com")
+@TestPropertySource("/application-test.yaml")
+@Sql(value = "/db/create_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/db/delete_user.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = "/db/create_car.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/db/delete_car.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+//@WithUserDetails(value = "m@gmail.com")
 class MainControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private MainController mainController;
+    MainController mainController;
 
     @Test
-    public void allCarsPageTest() throws Exception {
-        this.mockMvc.perform(get("/all_cars"))
+    public void mainPageTest() throws Exception {
+        this.mockMvc.perform(get("/"))
                 .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(xpath("//div[@id='navbarSupportedContent']/div").string("\n" +
-                        "        name@gmail.com\n" +
-                        "        Logout\n" +
-                        "      "));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/index"));
     }
 
     @Test
-    public void allCarsListTest() throws Exception {
-        this.mockMvc.perform(get("/all_cars"))
+    @WithUserDetails(value = "m@gmail.com")
+    public void carListTest() throws Exception {
+        this.mockMvc.perform(get("/all-cars"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//div[@id='carList']/div").nodeCount(2));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/all-cars"));
     }
 
     @Test
-    public void carDetailsTest() throws Exception {
-        this.mockMvc.perform(get("/all_cars/{id}", "5b9da910-c3fd-4a49-9465-dcae9eb7c292"))
+    @WithUserDetails(value = "m@gmail.com")
+    public void carDetailsPageTest() throws Exception {
+        this.mockMvc.perform(get("/all-cars/a327a4df-a3ef-4aff-96dc-2f6548a22cd4"))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div[1]/div[2]").string("\n" +
-                        "        Toyota Camry\n" +
-                        "    "));
+                .andExpect(view().name("/pages/car-details"));
     }
 
     @Test
-    public void createUserTest() throws Exception {
+    @WithUserDetails(value = "m@gmail.com")
+    public void makeOrderTest() throws Exception {
+        this.mockMvc.perform(post("/all-cars/a327a4df-a3ef-4aff-96dc-2f6548a22cd4")
+                    .param("placeOfFiling", "qweqr")
+                    .param("filingTime", "2022-11-23T17:45")
+                    .param("placeOfReturn", "qwrffas")
+                    .param("returnTime", "2022-11-25T17:45")
+                    .param("carId", "a327a4df-a3ef-4aff-96dc-2f6548a22cd4")
+                )
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/all-cars"));
+    }
+
+    @Test
+    public void registrationPageTest() throws Exception {
+        this.mockMvc.perform(get("/registration"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/registration"));
+    }
+
+    @Test
+    public void registerUserTest() throws Exception {
         this.mockMvc.perform(post("/registration")
-                        .param("firstname", "Tom")
-                        .param("lastname", "Thomson")
-                        .param("email", "tom@gmail.com")
-                        .param("phoneNumber", "0997830040")
-                        .param("password", "qwerty")
-                        .param("confirmPassword", "qwerty"))
+                                .param("user", "a@gmail.com")
+                                .param("firstname", "a")
+                                .param("lastname", "b")
+                                .param("email", "a@gmail.com")
+                                .param("phoneNumber", "564517864")
+                                .param("password", "qwe")
+                                .param("confirmPassword", "qwe"))
                 .andDo(print())
+                .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
 
     @Test
-    public void createUserTest_ValidatePassword() throws Exception {
+    public void registerUser_userAlreadyExistsTest() throws Exception {
         this.mockMvc.perform(post("/registration")
-                        .param("firstname", "Tom")
-                        .param("lastname", "Thomson")
-                        .param("email", "adg@gmail.com")
-                        .param("phoneNumber", "0997830040")
-                        .param("password", "qwerty")
-                        .param("confirmPassword", "a"))
+                        .param("user", "m@gmail.com")
+                        .param("firstname", "a")
+                        .param("lastname", "b")
+                        .param("email", "m@gmail.com")
+                        .param("phoneNumber", "564517864")
+                        .param("password", "qwe")
+                        .param("confirmPassword", "qwe"))
                 .andDo(print())
-                .andExpect(xpath("/html/body/div[1]/form/div[5]/div/div").string("\n" +
-                        "                        Passwords are different\n" +
-                        "                      "));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/registration"));
     }
 
     @Test
-    public void createUserTest_ValidateEmail() throws Exception {
+    public void registerUser_badValidateTest() throws Exception {
         this.mockMvc.perform(post("/registration")
-                        .param("firstname", "Tom")
-                        .param("lastname", "Thomson")
-                        .param("email", "tom@gmail.com")
-                        .param("phoneNumber", "0997830040")
-                        .param("password", "qwerty")
-                        .param("confirmPassword", "qwerty"))
+                        .param("user", "a@gmail.com")
+                        .param("firstname", "")
+                        .param("lastname", "")
+                        .param("email", "a@gmail.com")
+                        .param("phoneNumber", "564517864")
+                        .param("password", "qwe")
+                        .param("confirmPassword", "qwe"))
                 .andDo(print())
-                .andExpect(xpath("/html/body/div[1]/form/div[4]/div/div").string("\n" +
-                        "                        User with tom@gmail.com already exists\n" +
-                        "                      "));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/registration"));
     }
 
     @Test
-    public void createOrderTest() throws Exception {
-        this.mockMvc.perform(post("/all_cars")
-                        .param("placeOfFiling", "Kiyv,Airport-Boryspol")
-                        .param("filingTime", "2022-11-11T17:30:00")
-                        .param("placeOfReturn", "Kiyv,Airport-Boryspol")
-                        .param("returnTime", "2022-11-14T17:30:00")
-                        .param("carId", "5b9da910-c3fd-4a49-9465-dcae9eb7c292"))
+    public void registerUser_badValidatePasswordTest() throws Exception {
+        this.mockMvc.perform(post("/registration")
+                        .param("user", "a@gmail.com")
+                        .param("firstname", "a")
+                        .param("lastname", "b")
+                        .param("email", "a@gmail.com")
+                        .param("phoneNumber", "564517864")
+                        .param("password", "")
+                        .param("confirmPassword", "qe"))
                 .andDo(print())
-                .andExpect(xpath("//div[@id='carList']/div").nodeCount(6));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/registration"));
     }
 }

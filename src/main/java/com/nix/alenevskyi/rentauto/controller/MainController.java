@@ -49,15 +49,8 @@ public class MainController {
                                 @PageableDefault(size = 8, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
     ) {
         Page<Car> page = autoRentService.getCarSortedBy(sortBy, pageable);
-        List<Image> images = new ArrayList<>();
-        for (Car car:page) {
-            if(!car.getImages().isEmpty()){
-                images.add(car.getImages().get(0));
-            }
-        }
         model.addAttribute("url", "/all-cars");
         model.addAttribute("page", page);
-        model.addAttribute("images", images);
         return "/pages/all-cars";
     }
 
@@ -77,7 +70,7 @@ public class MainController {
             @RequestParam(name = "placeOfReturn") String placeOfReturn,
             @RequestParam(name = "returnTime") String returnTime,
             @RequestParam(name = "carId") Car car
-//            @PageableDefault(size = 8, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+
     ) {
         User user = autoRentService.getUserByUsername(getCurrentUsername());
         Order order = Order.builder()
@@ -90,11 +83,8 @@ public class MainController {
                 .build();
         autoRentService.saveOrder(order);
 
-//        Page<Car> cars = autoRentService.carList(pageable);
-//        model.addAttribute("page", cars);
-//        model.addAttribute("url", "all-cars");
         model.addAttribute("car", car);
-        return "/pages/car-details";
+        return "redirect:/all-cars";
     }
 
     @GetMapping("/registration")
@@ -118,9 +108,4 @@ public class MainController {
         }
         return "redirect:/login";
     }
-
-//    @GetMapping("/login")
-//    public String loginPage(){
-//        return "/pages/login";
-//    }
 }

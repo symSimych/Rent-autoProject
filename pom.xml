@@ -90,6 +90,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${project.parent.version}</version>
 				<configuration>
+					<outputDirectory>${project.basedir}/container/docker</outputDirectory>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -97,7 +98,7 @@
 						</exclude>
 					</excludes>
 					<profiles>
-						<profile>prod</profile>
+						<profile>dev</profile>
 					</profiles>
 				</configuration>
 			</plugin>

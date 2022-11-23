@@ -1,0 +1,1 @@
+delete from Orders where id = 'be135665-3923-4c6f-af04-698d45ac36b9';

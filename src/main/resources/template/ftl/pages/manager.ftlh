@@ -6,7 +6,7 @@
         <div class="col">
         <h1>unconfirmed orders</h1>
           <form name="phoneNumber" action="/manager" method="post">
-            Phone number: <input type="tel" name="phone_number" />
+            Phone number: <input type="tel" name="phoneNumber" />
             <input type="submit" value="Find"/>
           </form>
           <table class="table table-bordered border-info">

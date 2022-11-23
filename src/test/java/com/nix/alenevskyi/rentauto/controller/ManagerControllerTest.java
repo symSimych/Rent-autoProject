@@ -6,91 +6,177 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithUserDetails(value = "name@gmail.com")
+@TestPropertySource("/application-test.yaml")
+@Sql(value = "/db/create_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/db/delete_user.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = "/db/create_car.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/db/delete_car.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = "/db/create_order.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/db/delete_order.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@WithUserDetails(value = "m@gmail.com")
 class ManagerControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private MainController mainController;
+    ManagerController managerController;
 
     @Test
-    public void managerPage() throws Exception {
+    public void managerMainPageTest() throws Exception {
         this.mockMvc.perform(get("/manager"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div[1]").nodeCount(1));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/manager"));
     }
 
     @Test
-    public void changeOrderPageTest()throws Exception {
-        this.mockMvc.perform(get("/manager/order/{order}", "5f5af688-4366-4e7a-8a4d-9202e6740103"))
+    public void orderDetailsPageList() throws Exception {
+        this.mockMvc.perform(get("/manager/order/be135665-3923-4c6f-af04-698d45ac36b9"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div[1]").nodeCount(1));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/change-order"));
     }
 
     @Test
-    public void carManagePageTest()throws Exception {
-        this.mockMvc.perform(get("/manager/car_manage"))
+    public void carManagePageTest() throws Exception {
+        this.mockMvc.perform(get("/manager/car-manage/a327a4df-a3ef-4aff-96dc-2f6548a22cd4"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div").nodeCount(2));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/edit-car"));
     }
 
     @Test
-    public void carPageTest()throws Exception {
-        this.mockMvc.perform(get("/manager/car_manage/{car}", "5b9da910-c3fd-4a49-9465-dcae9eb7c292"))
+    public void listCarPageTest() throws Exception {
+        this.mockMvc.perform(get("/manager/car-manage"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div[1]").nodeCount(1));
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/car-manage"));
     }
 
     @Test
-    public void changeCarParameterTest() throws Exception {
-        this.mockMvc.perform(post("/manager/car_manage/{car}", "f294f545-ce35-4385-8f1f-07e190aafea9")
-                        .param("brand", "Volkswagen")
-                        .param("carModel", "Golf")
-                        .param("bodyType", "hatchback")
-                        .param("transmission", "automatic")
-                        .param("year", "2014")
-                        .param("fuelType", "gasoline")
-                        .param("horsePower", "180")
-                        .param("engineVolume", "1.8")
-                        .param("fuelConsumption", "6")
-                        .param("tankVolume", "45")
-                        .param("bail", "500")
-                        .param("price", "45")
-                        .param("status", "true"))
+    public void addCarPageTest() throws Exception {
+        this.mockMvc.perform(get("/manager/add-car"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/add-car"));
+    }
+
+    @Test
+    public void addCarTest() throws Exception {
+        MockHttpServletRequestBuilder multipart = multipart("/add-new-car")
+                .file("files", "123".getBytes())
+                .param("brand", "qweqr")
+                .param("model", "assaf")
+                .param("bodyType", "sdf")
+                .param("year", "645")
+                .param("transmission", "gfdass")
+                .param("fuelType", "gsfasd")
+                .param("engineVolume", "1.9")
+                .param("horsePower", "190")
+                .param("tankVolume", "50")
+                .param("fuelConsumption", "5.5")
+                .param("bail", "300")
+                .param("price", "45");
+
+        this.mockMvc.perform(multipart)
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/add-car"));
+    }
+
+    @Test
+    public void manageCarTest() throws Exception {
+        MockHttpServletRequestBuilder multipart = multipart("/manager/car-manage/a327a4df-a3ef-4aff-96dc-2f6548a22cd4")
+                .file("files", "123".getBytes())
+                .param("brand", "qweqr")
+                .param("carModel", "assaf")
+                .param("bodyType", "sdf")
+                .param("year", "5123")
+                .param("transmission", "sda")
+                .param("fuelType", "gsfasd")
+                .param("engineVolume", "1.8")
+                .param("horsePower", "180")
+                .param("tankVolume", "50")
+                .param("fuelConsumption", "5")
+                .param("bail", "300")
+                .param("price", "45")
+                .param("status", "true")
+                .param("car", "a327a4df-a3ef-4aff-96dc-2f6548a22cd4");
+
+        this.mockMvc.perform(multipart)
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/edit-car"));
     }
 
     @Test
     public void changeOrderTest() throws Exception {
-        this.mockMvc.perform(post("/manager/order/{order}", "5f5af688-4366-4e7a-8a4d-9202e6740103")
-                        .param("placeOfFiling", "Kiyv,Airport-Boryspol")
-                        .param("filingTime", "2022-11-11T17:30:00")
-                        .param("placeOfReturn", "Kiyv,Airport-Boryspol")
-                        .param("returnTime", "2022-11-14T17:30:00")
-                        .param("carId", "5b9da910-c3fd-4a49-9465-dcae9eb7c292"))
+        this.mockMvc.perform(post("/manager/order/be135665-3923-4c6f-af04-698d45ac36b9")
+                        .param("order", "be135665-3923-4c6f-af04-698d45ac36b9")
+                        .param("placeOfFiling", "wfdDAS")
+                        .param("filingTime", "2022-11-23T20:45")
+                        .param("placeOfReturn", "GESAD")
+                        .param("returnTime", "2022-11-27T20:45")
+                )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/manager"));
+    }
+
+    @Test
+    public void confirmOrderTest() throws Exception {
+        this.mockMvc.perform(post("/manager")
+                        .param("carId", "a327a4df-a3ef-4aff-96dc-2f6548a22cd4")
+                        .param("orderId", "be135665-3923-4c6f-af04-698d45ac36b9")
+                ).andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/manager"));
+    }
+
+    @Test
+    public void findByPhoneTest() throws Exception {
+        this.mockMvc.perform(post("/manager")
+                        .param("phoneNumber", "05651")
+                ).andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/manager"));
+    }
+
+    @Test
+    public void findByEmptyPhoneTest() throws Exception {
+        this.mockMvc.perform(post("/manager")
+                        .param("phoneNumber", "")
+                ).andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(view().name("/pages/manager"));
     }
 }
